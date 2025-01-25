@@ -17,6 +17,9 @@ st.write('The name on your Smoothie will be:', name_on_order)
 cnx = st.connection("snowflake")
 session = cnx.session()
 my_dataframe = session.table("smoothies.public.fruit_options").select(col('FRUIT_NAME'),col('SEARCH_ON'))
+my_badge_dataframe = session.table("smoothies.public.orders").filter(col("ORDER_FILLED")==0).collect()
+editable_df = st.data_editor(my_badge_dataframe)
+
 
 # st.dataframe(data=my_dataframe, use_container_width=True)
 # st.stop()
@@ -48,9 +51,7 @@ if ingredients_list:
             values('""" + ingredients_string + """','"""+name_on_order+ """')"""
 
 
-    my_badge_dataframe = session.table("smoothies.public.orders").filter(col("ORDER_FILLED")==0).collect()
-    editable_df = st.data_editor(my_badge_dataframe)
-
+    
     time_to_insert = st.button('Submit Order')
     if time_to_insert:
         
